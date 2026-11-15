@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Calculator with History | DSA Project</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">🧮</div>
+        <div>
+          <h1>Smart Calculator <span class="badge-dsa">DSA Edition</span></h1>
+          <p class="subtitle">Queue &bull; Stack (Infix &rarr; Postfix) &bull; Evaluation &bull; Doubly Linked List History</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-theory-modal" class="pill-btn"><span class="btn-icon">💡</span> DSA Concepts</button>
+        <button id="btn-c-code-modal" class="pill-btn"><span class="btn-icon">📄</span> View C Backend</button>
+      </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="main-layout">
+      <!-- Left Column: Calculator -->
+      <section class="card calculator-card">
+        <div class="card-header">
+          <h2>Calculator</h2>
+          <span class="status-indicator"><span class="pulse-dot"></span> Backend: C</span>
+        </div>
+
+        <div class="display-container">
+          <div class="display-prev" id="display-prev"></div>
+          <div class="display-main" id="display-main">0</div>
+        </div>
+
+        <div class="keypad">
+          <!-- Row 1 -->
+          <button class="key key-fn" data-action="clear" title="All Clear">AC</button>
+          <button class="key key-fn" data-action="backspace" title="Delete Last">⌫</button>
+          <button class="key key-op" data-char="(">(</button>
+          <button class="key key-op" data-char=")">)</button>
+
+          <!-- Row 2 -->
+          <button class="key" data-char="7">7</button>
+          <button class="key" data-char="8">8</button>
+          <button class="key" data-char="9">9</button>
+          <button class="key key-op" data-char="/" title="Division">&divide;</button>
+
+          <!-- Row 3 -->
+          <button class="key" data-char="4">4</button>
+          <button class="key" data-char="5">5</button>
+          <button class="key" data-char="6">6</button>
+          <button class="key key-op" data-char="*" title="Multiplication">&times;</button>
+
+          <!-- Row 4 -->
+          <button class="key" data-char="1">1</button>
+          <button class="key" data-char="2">2</button>
+          <button class="key" data-char="3">3</button>
+          <button class="key key-op" data-char="-" title="Subtraction">&minus;</button>
+
+          <!-- Row 5 -->
+          <button class="key" data-char="0">0</button>
+          <button class="key" data-char="^" title="Power / Exponent">^</button>
+          <button class="key key-equals" data-action="equals" title="Calculate">=</button>
+          <button class="key key-op" data-char="+" title="Addition">+</button>
+        </div>
+
+        <div class="calculator-hints">
+          <span>⌨️ Keyboard active (Numbers, +, -, *, /, ^, Enter, Backspace)</span>
+        </div>
+      </section>
+
+      <!-- Center Column: DSA Live Visualizer -->
+      <section class="card visualizer-card">
+        <div class="card-header">
+          <h2>DSA Pipeline Visualizer</h2>
+          <div class="anim-controls">
+            <label class="toggle-label" title="Animate steps sequentially">
+              <input type="checkbox" id="chk-animate" checked>
+              <span>Animate Steps</span>
+            </label>
+            <button id="btn-step-forward" class="mini-btn" title="Next Step" disabled>Next Step ⏭</button>
+          </div>
+        </div>
+
+        <div class="visualizer-content">
+          <!-- Status Banner -->
+          <div class="step-status-box" id="step-status-box">
+            <span class="status-badge" id="current-phase-badge">Phase: Idle</span>
+            <span class="status-desc" id="current-phase-desc">Enter an expression and press '=' to visualize Data Structure steps.</span>
+          </div>
+
+          <!-- Step 1: Queue -->
+          <div class="dsa-lane">
+            <div class="lane-title">
+              <span class="step-num">1</span>
+              <span>Input Queue (FIFO)</span>
+              <span class="lane-tag">Tokens enqueued -> dequeued</span>
+            </div>
+            <div class="queue-container" id="visual-queue">
+              <span class="empty-state">Queue is empty</span>
+            </div>
+            <div class="lane-meta">
+              <span>Front (dequeue) &larr;</span>
+              <span>&larr; Rear (enqueue)</span>
+            </div>
+          </div>
+
+          <!-- Step 2: Operator Stack -->
+          <div class="dsa-lane">
+            <div class="lane-title">
+              <span class="step-num">2</span>
+              <span>Operator Stack (LIFO)</span>
+              <span class="lane-tag">Infix &rarr; Postfix by Precedence</span>
+            </div>
+            <div class="stack-container" id="visual-op-stack">
+              <span class="empty-state">Stack is empty</span>
+            </div>
+            <div class="lane-meta">
+              <span>Bottom [0]</span>
+              <span>Top of Stack [op_top] &uarr;</span>
+            </div>
+          </div>
+
+          <!-- Step 3: Generated Postfix -->
+          <div class="dsa-lane">
+            <div class="lane-title">
+              <span class="step-num">3</span>
+              <span>Generated Postfix Expression</span>
+              <span class="lane-tag">Reverse Polish Notation</span>
+            </div>
+            <div class="postfix-container" id="visual-postfix">
+              <span class="empty-state">No postfix expression generated yet</span>
+            </div>
+          </div>
+
+          <!-- Step 4: Operand Evaluation Stack -->
+          <div class="dsa-lane">
+            <div class="lane-title">
+              <span class="step-num">4</span>
+              <span>Operand Evaluation Stack (LIFO)</span>
+              <span class="lane-tag">Push numbers, Pop 2 on operator</span>
+            </div>
+            <div class="stack-container eval-stack" id="visual-eval-stack">
+              <span class="empty-state">Evaluation stack is empty</span>
+            </div>
+            <div class="lane-meta">
+              <span>Bottom [0]</span>
+              <span>Top of Stack [eval_top] &uarr;</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Doubly Linked List History -->
+      <section class="card history-card">
+        <div class="card-header">
+          <h2>History (Doubly LL)</h2>
+          <button id="btn-clear-history" class="clear-btn" title="Clear All History">Clear</button>
+        </div>
+
+        <!-- Doubly Linked List Interactive Navigator -->
+        <div class="dll-navigator-box">
+          <div class="nav-title">Interactive DLL Traversal</div>
+          <div class="nav-buttons">
+            <button id="btn-nav-prev" class="nav-btn" disabled>&larr; Prev Node</button>
+            <span class="nav-indicator" id="nav-indicator">No Nodes</span>
+            <button id="btn-nav-next" class="nav-btn" disabled>Next Node &rarr;</button>
+          </div>
+          <div class="current-node-preview" id="current-node-preview">
+            <div class="preview-empty">Perform a calculation to create Doubly Linked List nodes</div>
+          </div>
+        </div>
+
+        <!-- History Nodes List -->
+        <div class="history-list-header">
+          <span>All History Nodes</span>
+          <span class="count-badge" id="history-count">0 nodes</span>
+        </div>
+        <div class="history-nodes-list" id="history-nodes-list">
+          <div class="empty-history">
+            <span>📝</span>
+            <p>No calculations yet.<br>Every calculation is stored as a doubly linked list node with previous and next pointers.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Doubly Linked List Visual Tape (Bottom Full-Width Row) -->
+    <section class="card dll-visual-tape-card">
+      <div class="card-header">
+        <h2>Doubly Linked List Structure Map</h2>
+        <span class="lane-tag">Head &harr; Node &harr; Tail Pointer Visualization</span>
+      </div>
+      <div class="dll-tape-container" id="dll-tape-container">
+        <span class="empty-state">HEAD = NULL &nbsp;|&nbsp; TAIL = NULL</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal 1: DSA Concepts & Viva Guide -->
+  <div class="modal-overlay" id="modal-theory">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>DSA Concepts & Project Architecture</h3>
+        <button class="modal-close" data-close="modal-theory">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="theory-grid">
+          <div class="theory-box">
+            <h4>1. Queue (FIFO)</h4>
+            <p><strong>Role:</strong> Captures incoming mathematical characters/tokens from the user input in strictly sequential order.</p>
+            <p><strong>Principle:</strong> First-In, First-Out (Enqueue at rear, Dequeue from front).</p>
+            <p><strong>Complexity:</strong> Time: O(1) per token | Space: O(N)</p>
+          </div>
+
+          <div class="theory-box">
+            <h4>2. Stack for Infix to Postfix (LIFO)</h4>
+            <p><strong>Role:</strong> Temporarily holds operators and parentheses to reorder them based on precedence (<code>^</code> &gt; <code>* /</code> &gt; <code>+ -</code>).</p>
+            <p><strong>Principle:</strong> Shunting-Yard Algorithm. High precedence operators pop before low precedence operators are pushed.</p>
+            <p><strong>Complexity:</strong> Time: O(N) | Space: O(N)</p>
+          </div>
+
+          <div class="theory-box">
+            <h4>3. Stack for Postfix Evaluation (LIFO)</h4>
+            <p><strong>Role:</strong> Scans the postfix string. Digits/numbers are pushed to stack. When an operator is encountered, 2 numbers are popped (<code>b</code> then <code>a</code>), computed, and pushed back.</p>
+            <p><strong>Principle:</strong> Operand evaluation without ambiguity.</p>
+            <p><strong>Complexity:</strong> Time: O(N) | Space: O(N)</p>
+          </div>
+
+          <div class="theory-box">
+            <h4>4. Doubly Linked List (History)</h4>
+            <p><strong>Role:</strong> Stores each calculation with bidirectional links (<code>prev</code> and <code>next</code> pointers).</p>
+            <p><strong>Advantage:</strong> Allows constant-time O(1) insertion at the tail, two-way traversal (oldest-to-newest and newest-to-oldest), and previous/next interactive navigation.</p>
+            <p><strong>Complexity:</strong> Insertion: O(1) | Traversal: O(N) | Space: O(N)</p>
+          </div>
+        </div>
+
+        <div class="flow-summary">
+          <h4>Execution Flow Pipeline:</h4>
+          <div class="pipeline-flow">
+            <span class="flow-pill">User Input</span> &rarr;
+            <span class="flow-pill">Input Queue</span> &rarr;
+            <span class="flow-pill">Operator Stack</span> &rarr;
+            <span class="flow-pill">Postfix String</span> &rarr;
+            <span class="flow-pill">Evaluation Stack</span> &rarr;
+            <span class="flow-pill">Doubly Linked List Node</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: C Backend Code Viewer -->
+  <div class="modal-overlay" id="modal-c-code">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>Backend C Code (backend.c)</h3>
+        <button class="modal-close" data-close="modal-c-code">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtitle">This C program does the calculation. The page only sends commands and shows the result.</p>
+        <div class="code-viewer">
+          <pre><code id="c-code-content">// Loading backend C code...</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
