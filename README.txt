@@ -14,5 +14,3 @@ index.html, style.css, script.js - web page (frontend)
 26MCA050_Smart_Calculator.pptx - presentation 
 26MCA050_Smart_Calculator_Report.docx / .pdf - report 
 
-NOTE
-Only whole numbers. 2^3^2 is solved left to right (64).
