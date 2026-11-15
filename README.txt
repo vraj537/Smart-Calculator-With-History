@@ -1,6 +1,5 @@
 Smart Calculator with History (DSA Project)
 Students: Rathod Vraj (26MCA050), Hardevsinh Zala (26MCA063)
-GitHub  : https://github.com/vraj537/Smart-Calculator-With-History
 Faculty : Assistant Professor Nirav Patel
 
 HOW TO RUN
