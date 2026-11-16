@@ -1,5 +1,6 @@
 Smart Calculator with History (DSA Project)
 Students: Rathod Vraj (26MCA050), Hardevsinh Zala (26MCA063)
+GitHub  : https://github.com/vraj537/Smart-Calculator-With-History
 Faculty : Assistant Professor Nirav Patel
 
 HOW TO RUN
@@ -14,3 +15,5 @@ index.html, style.css, script.js - web page (frontend)
 26MCA050_Smart_Calculator.pptx - presentation 
 26MCA050_Smart_Calculator_Report.docx / .pdf - report 
 
+NOTE
+Only whole numbers. 2^3^2 is solved left to right (64).
